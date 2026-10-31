@@ -1,0 +1,15 @@
+# Secrets (Telegram token, passwords) — never commit
+.env
+
+# Maven build output
+target/
+
+# IntelliJ settings
+.idea/
+*.iml
+
+# VS Code settings
+.vscode/
+
+# OS junk
+.DS_Store

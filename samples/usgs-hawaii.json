@@ -1,0 +1,40 @@
+{
+    "type": "Feature",
+    "properties": {
+        "mag": 2.16,
+        "place": "3 km SSW of Pāhala, Hawaii",
+        "time": 1793447404050,
+        "updated": 1793447608300,
+        "tz": null,
+        "url": "https://earthquake.usgs.gov/earthquakes/eventpage/hv75066751",
+        "detail": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/hv75066751.geojson",
+        "felt": null,
+        "cdi": null,
+        "mmi": null,
+        "alert": null,
+        "status": "automatic",
+        "tsunami": 0,
+        "sig": 72,
+        "net": "hv",
+        "code": "75066751",
+        "ids": ",hv75066751,",
+        "sources": ",hv,",
+        "types": ",origin,phase-data,",
+        "nst": 44,
+        "dmin": 0.02762,
+        "rms": 0.109999999,
+        "gap": 106,
+        "magType": "md",
+        "type": "earthquake",
+        "title": "M 2.2 - 3 km SSW of Pāhala, Hawaii"
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            -155.488159179688,
+            19.1679992675781,
+            35.3800010681152
+        ]
+    },
+    "id": "hv75066751"
+}

@@ -1,0 +1,30 @@
+{
+    "action": "create",
+    "data": {
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -155.4882,
+                19.1680,
+                -35.4
+            ]
+        },
+        "id": "20261031_0000142",
+        "properties": {
+            "source_id": "2083361",
+            "source_catalog": "EMSC-RTS",
+            "lastupdate": "2026-10-31T11:53:35.746387Z",
+            "time": "2026-10-31T11:50:04.05Z",
+            "flynn_region": "ISLAND OF HAWAII, HAWAII",
+            "lat": 19.1680,
+            "lon": -155.4882,
+            "depth": 35.4,
+            "evtype": "ke",
+            "auth": "HV",
+            "mag": 2.2,
+            "magtype": "md",
+            "unid": "20261031_0000142"
+        }
+    }
+}

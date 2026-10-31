@@ -1,0 +1,40 @@
+{
+    "type": "Feature",
+    "properties": {
+        "mag": 4.2,
+        "place": "35 km SSE of Sykiá, Greece",
+        "time": 1793408519344,
+        "updated": 1793409508040,
+        "tz": null,
+        "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tugg",
+        "detail": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us7000tugg.geojson",
+        "felt": null,
+        "cdi": null,
+        "mmi": null,
+        "alert": null,
+        "status": "reviewed",
+        "tsunami": 0,
+        "sig": 271,
+        "net": "us",
+        "code": "7000tugg",
+        "ids": ",us7000tugg,",
+        "sources": ",us,",
+        "types": ",moment-tensor,origin,phase-data,",
+        "nst": 29,
+        "dmin": 1.318,
+        "rms": 1.15,
+        "gap": 42,
+        "magType": "mwr",
+        "type": "earthquake",
+        "title": "M 4.2 - 35 km SSE of Sykiá, Greece"
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            24.1487,
+            39.7672,
+            10
+        ]
+    },
+    "id": "us7000tugg"
+}
