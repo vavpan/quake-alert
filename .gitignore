@@ -13,3 +13,7 @@ target/
 
 # OS junk
 .DS_Store
+
+# Gradle build output
+build/
+.gradle/

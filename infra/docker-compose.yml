@@ -1,0 +1,102 @@
+# Quake Alert — local infrastructure (phase 1).
+# Our own Java services run from IntelliJ and connect to these.
+#
+# Host ports are shifted (+1) from the usual defaults so this can run
+# side by side with the ATM platform without port clashes.
+#
+#   Kafka      localhost:9094
+#   Kafka UI   http://localhost:8091
+#   Postgres   localhost:5433   (user/pass: quake/quake)
+#   Redis      localhost:6380
+#   Mailpit    http://localhost:8025  (SMTP on localhost:1025)
+
+services:
+  kafka:
+    image: apache/kafka:3.7.0
+    container_name: quake-kafka
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      # PLAINTEXT = for apps on the host (IntelliJ), INTERNAL = for other containers
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,INTERNAL://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9094,INTERNAL://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      # Topics are created explicitly by kafka-init (see README: 1 partition)
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      CLUSTER_ID: "UXVha2VBbGVydENsdXN0ZXI"
+    ports:
+      - "9094:9092"
+    volumes:
+      - quake_kafka:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server kafka:29092 > /dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+
+  # Runs once: creates our topics, then exits.
+  kafka-init:
+    image: apache/kafka:3.7.0
+    container_name: quake-kafka-init
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        for t in quakes.raw quakes.canonical notifications.requested notifications.dlq; do
+          /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 \
+            --create --if-not-exists --topic "$$t" --partitions 1 --replication-factor 1
+        done
+        echo "Topics:"
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:29092 --list
+    restart: "no"
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: quake-kafka-ui
+    ports:
+      - "8091:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: quake
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16
+    container_name: quake-postgres
+    environment:
+      POSTGRES_USER: quake
+      POSTGRES_PASSWORD: quake
+      POSTGRES_DB: quake
+    ports:
+      - "5433:5432"
+    volumes:
+      - quake_pg:/var/lib/postgresql/data
+      # One database per service — runs only on the very first start
+      - ./init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql
+
+  redis:
+    image: redis:7
+    container_name: quake-redis
+    ports:
+      - "6380:6379"
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: quake-mailpit
+    ports:
+      - "8025:8025"   # web inbox
+      - "1025:1025"   # SMTP (where the Notifier sends email)
+
+volumes:
+  quake_kafka:
+  quake_pg:
